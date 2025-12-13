@@ -5,13 +5,6 @@ import { WhiskeyProduct } from '@/types/product';
 
 export interface CartItem extends WhiskeyProduct {
   quantity: number;
-  selectedOptions?: {
-    giftWrapping?: boolean;
-    giftMessage?: boolean;
-    engraving?: boolean;
-    insurance?: boolean;
-    expressShipping?: boolean;
-  };
 }
 
 interface CartContextType {

@@ -30,9 +30,15 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1);
   
   // Product options state
-  const [options, setOptions] = useState({
+  const [options, setOptions] = useState<{
+    giftWrapping?: boolean;
+    giftMessage?: string;
+    engraving?: boolean;
+    insurance?: boolean;
+    expressShipping?: boolean;
+  }>({
     giftWrapping: false,
-    giftMessage: false,
+    giftMessage: '',
     engraving: false,
     insurance: false,
     expressShipping: false,
@@ -61,7 +67,15 @@ export default function ProductPage() {
   const { addToCart } = useCart();
 
   const handleOptionChange = (option: keyof typeof options) => {
+    if (option === 'giftMessage') {
+      // giftMessage is handled separately as a text input
+      return;
+    }
     setOptions(prev => ({ ...prev, [option]: !prev[option] }));
+  };
+
+  const handleGiftMessageChange = (value: string) => {
+    setOptions(prev => ({ ...prev, giftMessage: value }));
   };
 
   const decreaseQuantity = () => {
@@ -225,17 +239,34 @@ export default function ProductPage() {
                       </span>
                     </label>
                     
-                    <label className="flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={options.giftMessage}
-                        onChange={() => handleOptionChange('giftMessage')}
-                        className="w-4 h-4 text-[#bd9a65] border-gray-300 rounded focus:ring-[#bd9a65]"
-                      />
-                      <span className="ml-3 text-gray-700">
-                        Add Gift Message (Free)
-                      </span>
-                    </label>
+                    <div>
+                      <label className="flex items-center cursor-pointer mb-2">
+                        <input
+                          type="checkbox"
+                          checked={options.giftMessage !== undefined}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setOptions(prev => ({ ...prev, giftMessage: '' }));
+                            } else {
+                              setOptions(prev => ({ ...prev, giftMessage: undefined }));
+                            }
+                          }}
+                          className="w-4 h-4 text-[#bd9a65] border-gray-300 rounded focus:ring-[#bd9a65]"
+                        />
+                        <span className="ml-3 text-gray-700">
+                          Add Gift Message (Free)
+                        </span>
+                      </label>
+                      {options.giftMessage !== undefined && (
+                        <textarea
+                          value={options.giftMessage}
+                          onChange={(e) => handleGiftMessageChange(e.target.value)}
+                          placeholder="Enter your gift message..."
+                          rows={3}
+                          className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-900 text-sm"
+                        />
+                      )}
+                    </div>
                     
                     <label className="flex items-center cursor-pointer">
                       <input
