@@ -35,9 +35,9 @@ export default function Header() {
             aria-label="Toggle menu"
           >
             {showMobileMenu ? (
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             ) : (
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             )}
           </button>
 
@@ -107,7 +107,7 @@ export default function Header() {
                 className="text-gray-500 hover:text-gray-900 transition-colors"
                 aria-label="Search"
               >
-                <Search className="w-7 h-7" />
+                <Search className="w-5 h-5" />
               </button>
               
               {/* Search Backdrop */}
@@ -148,7 +148,7 @@ export default function Header() {
                 onMouseEnter={() => setShowCart(true)}
                 onMouseLeave={() => setShowCart(false)}
               >
-                <ShoppingCart className="w-7 h-7" />
+                <ShoppingCart className="w-5 h-5" />
                 {totalItems > 0 && (
                   <span className="absolute bottom-5 left-5 bg-gray-900 text-white text-[10px] font-medium rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center leading-none">
                     {totalItems}
