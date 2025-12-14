@@ -145,10 +145,23 @@ export default function Header() {
                 className={`relative inline-flex items-center justify-center transition-colors cursor-pointer ${
                   isActive('/cart') ? 'text-red-600 hover:text-red-700' : 'text-gray-500 hover:text-gray-900'
                 }`}
-                onMouseEnter={() => setShowCart(true)}
-                onMouseLeave={() => setShowCart(false)}
+                onMouseEnter={() => {
+                  // Only show dropdown on desktop (md and above)
+                  setShowCart(true);
+                }}
+                onMouseLeave={() => {
+                  // Only hide dropdown on desktop
+                  setShowCart(false);
+                }}
+                onClick={(e) => {
+                  // On mobile, prevent hover behavior and go directly to cart
+                  // The link href will handle navigation
+                  if (window.innerWidth < 768) {
+                    setShowCart(false);
+                  }
+                }}
               >
-                <ShoppingCart className="w-5 h-5" />
+                <ShoppingCart className="w-7 h-7" />
                 {totalItems > 0 && (
                   <span className="absolute bottom-5 left-5 bg-gray-900 text-white text-[10px] font-medium rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center leading-none">
                     {totalItems}
@@ -156,10 +169,10 @@ export default function Header() {
                 )}
               </Link>
               
-              {/* Cart Dropdown */}
+              {/* Cart Dropdown - Desktop only */}
               {showCart && cartItems.length > 0 && (
                 <div
-                  className="absolute right-0 top-full -mt-1.5 w-[calc(100vw-2rem)] sm:w-80 max-w-sm z-50"
+                  className="hidden md:block absolute right-0 top-full -mt-1.5 w-80 max-w-sm z-50"
                   onMouseEnter={() => setShowCart(true)}
                   onMouseLeave={() => setShowCart(false)}
                 >
