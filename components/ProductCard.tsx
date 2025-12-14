@@ -78,7 +78,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center justify-between gap-3 mt-auto">
           <div className="flex items-baseline gap-2">
             {hasDiscount ? (
-              <div className="flex flex-col items-baseline gap-2">
+              <div className="flex flex-col items-baseline">
                 <span className="text-xs md:text-sm text-red-600 line-through">{product.regularPrice}</span>
                 <span className="text-base font-medium text-gray-900">{product.price}</span>
               </div>
