@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 
 function OrderConfirmationContent() {
   const searchParams = useSearchParams();
@@ -12,19 +13,7 @@ function OrderConfirmationContent() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="text-center">
         <div className="mb-8">
-          <svg
-            className="mx-auto h-16 w-16 text-green-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+          <CheckCircle2 className="mx-auto h-16 w-16 text-green-500" />
         </div>
         <h1 className="text-4xl font-light text-gray-900 mb-4 tracking-tight">Order Confirmed!</h1>
         <p className="text-xl text-gray-600 mb-2 font-light">

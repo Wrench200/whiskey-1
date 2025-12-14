@@ -36,7 +36,7 @@ export default function ContactPage() {
       </div>
 
       {/* Page Header */}
-      <div className="mb-12 text-center">
+      <div className="mb-12 text-center" data-aos="fade-up">
         <h1 className="text-4xl font-light text-gray-900 mb-4 tracking-tight">Contact Us</h1>
         <p className="text-base text-gray-600 font-light max-w-2xl mx-auto">
           Have a question or need assistance? We're here to help. Reach out to us and we'll respond as soon as possible.
@@ -45,38 +45,38 @@ export default function ContactPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Contact Information */}
-        <div>
+        <div data-aos="fade-right" data-aos-delay="100">
           <h2 className="text-2xl font-light text-gray-900 mb-6">Get in Touch</h2>
           <div className="space-y-6">
             <div>
               <h3 className="text-sm font-medium text-gray-900 mb-2 uppercase tracking-wider">Email</h3>
               <p className="text-gray-600 font-light">
                 <a href="mailto:info@whiskeyfrontier.com" className="hover:text-gray-900 transition-colors">
-                  info@whiskeyfrontier.com
+                  info@goldenbarrelwhiskey.com
                 </a>
               </p>
             </div>
-            <div>
+            {/* <div>
               <h3 className="text-sm font-medium text-gray-900 mb-2 uppercase tracking-wider">Phone</h3>
               <p className="text-gray-600 font-light">
                 <a href="tel:+1234567890" className="hover:text-gray-900 transition-colors">
                   +1 (234) 567-890
                 </a>
               </p>
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <h3 className="text-sm font-medium text-gray-900 mb-2 uppercase tracking-wider">Hours</h3>
               <p className="text-gray-600 font-light">
                 Monday - Friday: 9:00 AM - 6:00 PM<br />
                 Saturday: 10:00 AM - 4:00 PM<br />
                 Sunday: Closed
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* Contact Form */}
-        <div>
+        <div data-aos="fade-left" data-aos-delay="100">
           <h2 className="text-2xl font-light text-gray-900 mb-6">Send us a Message</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>

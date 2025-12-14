@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import Image from 'next/image';
 import SearchBar from './SearchBar';
+import { Menu, X, Search, ShoppingCart, Minus, Plus } from 'lucide-react';
 
 export default function Header() {
+  const pathname = usePathname();
   const [showSearch, setShowSearch] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -14,51 +17,84 @@ export default function Header() {
 
   const totalItems = getTotalItems();
 
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(path);
+  };
+
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20 overflow-visible">
+        <div className="flex items-center justify-between h-20 sm:h-24 overflow-visible">
           {/* Mobile menu button */}
           <button
             onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="md:hidden text-gray-600 hover:text-gray-900 transition-colors"
+            className="md:hidden text-gray-600 hover:text-gray-900 transition-colors flex-shrink-0"
             aria-label="Toggle menu"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {showMobileMenu ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
+            {showMobileMenu ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
 
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="absolute left-1/2 transform -translate-x-1/2 md:relative md:left-0 md:transform-none md:translate-0 flex items-center">
             <Image
               src="/Logo.png"
               alt="Golden Barrel Whiskey"
               width={150}
               height={70}
-              className="h-8 sm:h-20 w-auto"
+              className="h-20 sm:h-24 w-auto"
               priority
             />
           </Link>
           
+          {/* Spacer for mobile to balance the menu button */}
+          <div className="md:hidden w-6"></div>
+          
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-600 hover:text-gray-900 text-sm font-normal transition-colors">
+            <Link 
+              href="/" 
+              className={`text-base font-normal transition-colors ${
+                isActive('/') ? 'text-red-600' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
               Home
             </Link>
-            <Link href="/collections" className="text-gray-600 hover:text-gray-900 text-sm font-normal transition-colors">
+            <Link 
+              href="/collections" 
+              className={`text-base font-normal transition-colors ${
+                isActive('/collections') ? 'text-red-600' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
               Collections
             </Link>
-            <Link href="/best-sellers" className="text-gray-600 hover:text-gray-900 text-sm font-normal transition-colors">
+            <Link 
+              href="/best-sellers" 
+              className={`text-base font-normal transition-colors ${
+                isActive('/best-sellers') ? 'text-red-600' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
               Best Sellers
             </Link>
-            <Link href="/contact" className="text-gray-600 hover:text-gray-900 text-sm font-normal transition-colors">
+            <Link 
+              href="/contact" 
+              className={`text-base font-normal transition-colors ${
+                isActive('/contact') ? 'text-red-600' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
               Contact
             </Link>
-            <Link href="/about" className="text-gray-600 hover:text-gray-900 text-sm font-normal transition-colors">
+            <Link 
+              href="/about" 
+              className={`text-base font-normal transition-colors ${
+                isActive('/about') ? 'text-red-600' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
               About
             </Link>
           </nav>
@@ -71,13 +107,33 @@ export default function Header() {
                 className="text-gray-500 hover:text-gray-900 transition-colors"
                 aria-label="Search"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
+                <Search className="w-7 h-7" />
               </button>
+              
+              {/* Search Backdrop */}
               {showSearch && (
-                <div className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-sm bg-white border border-gray-200 rounded-md shadow-lg p-4 z-50">
-                  <SearchBar onClose={() => setShowSearch(false)} />
+                <div
+                  className="fixed inset-0 backdrop-blur-xs bg-black/70 z-40"
+                  onClick={() => setShowSearch(false)}
+                />
+              )}
+              
+              {/* Search Bar */}
+              {showSearch && (
+                <div className="fixed inset-x-0 top-1/4 -translate-y-1/4 px-4 z-50">
+                  <div className="max-w-md mx-auto bg-white rounded-md shadow-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-medium text-gray-900">Search</h3>
+                      <button
+                        onClick={() => setShowSearch(false)}
+                        className="text-gray-400 hover:text-gray-600"
+                        aria-label="Close search"
+                      >
+                        <X className="w-6 h-6" />
+                      </button>
+                    </div>
+                    <SearchBar onClose={() => setShowSearch(false)} />
+                  </div>
                 </div>
               )}
             </div>
@@ -86,15 +142,15 @@ export default function Header() {
             <div className="relative">
               <Link
                 href="/cart"
-                className="relative inline-flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+                className={`relative inline-flex items-center justify-center transition-colors cursor-pointer ${
+                  isActive('/cart') ? 'text-red-600 hover:text-red-700' : 'text-gray-500 hover:text-gray-900'
+                }`}
                 onMouseEnter={() => setShowCart(true)}
                 onMouseLeave={() => setShowCart(false)}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.4 2.925-6.75a6.324 6.324 0 00-1.667-2.137M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                </svg>
+                <ShoppingCart className="w-7 h-7" />
                 {totalItems > 0 && (
-                  <span className="absolute top-0 right-0 bg-gray-900 text-white text-[10px] font-medium rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center leading-none">
+                  <span className="absolute bottom-5 left-5 bg-gray-900 text-white text-[10px] font-medium rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center leading-none">
                     {totalItems}
                   </span>
                 )}
@@ -103,10 +159,11 @@ export default function Header() {
               {/* Cart Dropdown */}
               {showCart && cartItems.length > 0 && (
                 <div
-                  className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-sm bg-white border border-gray-200 rounded-md shadow-lg max-h-96 overflow-y-auto z-50"
+                  className="absolute right-0 top-full -mt-1.5 w-[calc(100vw-2rem)] sm:w-80 max-w-sm z-50"
                   onMouseEnter={() => setShowCart(true)}
                   onMouseLeave={() => setShowCart(false)}
                 >
+                  <div className="bg-white border border-gray-200 rounded-md shadow-lg max-h-96 overflow-y-auto">
                   <div className="p-4">
                     <h3 className="font-medium text-gray-900 mb-4 text-sm">Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h3>
                     <div className="space-y-4">
@@ -131,14 +188,14 @@ export default function Header() {
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                 className="w-6 h-6 border border-gray-300 rounded flex items-center justify-center text-xs hover:bg-gray-50"
                               >
-                                −
+                                <Minus className="w-3 h-3" />
                               </button>
                               <span className="text-sm font-medium w-8 text-center">{item.quantity}</span>
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                 className="w-6 h-6 border border-gray-300 rounded flex items-center justify-center text-xs hover:bg-gray-50"
                               >
-                                +
+                                <Plus className="w-3 h-3" />
                               </button>
                             </div>
                             <p className="text-sm font-semibold text-gray-900 mt-1">{item.price}</p>
@@ -148,9 +205,7 @@ export default function Header() {
                             className="text-gray-400 hover:text-red-600 transition-colors"
                             aria-label="Remove item"
                           >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <X className="w-5 h-5" />
                           </button>
                         </div>
                       ))}
@@ -162,6 +217,7 @@ export default function Header() {
                       View Cart
                     </Link>
                   </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -171,70 +227,70 @@ export default function Header() {
         {/* Mobile Menu Backdrop */}
         {showMobileMenu && (
           <div
-            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            className="fixed inset-0 backdrop-blur-xs bg-black/700 z-40 md:hidden"
             onClick={() => setShowMobileMenu(false)}
           />
         )}
 
         {/* Mobile Menu Drawer */}
         <div
-          className={`fixed left-0 top-0 h-full w-[50vw] sm:w-80 max-w-sm bg-white border-r border-gray-200 shadow-lg z-50 md:hidden transition-transform duration-300 ease-in-out ${
+          className={`fixed left-0 top-0 h-full w-[70vw] sm:w-80 max-w-sm bg-white border-r border-gray-200 shadow-lg z-50 md:hidden transition-transform duration-300 ease-in-out ${
             showMobileMenu ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
           <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-            <Link href="/" onClick={() => setShowMobileMenu(false)}>
-              <Image
-                src="/Logo.png"
-                alt="Golden Barrel Whiskey"
-                width={150}
-                height={40}
-                className="h-16 w-auto"
-              />
-            </Link>
+            <h2 className="text-lg font-medium text-gray-900">Menu</h2>
             <button
               onClick={() => setShowMobileMenu(false)}
               className="text-gray-400 hover:text-gray-600"
               aria-label="Close menu"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="w-6 h-6" />
             </button>
           </div>
-          <nav className="py-8 space-y-1">
+          <nav className="py-4">
             <Link
               href="/"
               onClick={() => setShowMobileMenu(false)}
-              className="block px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-normal transition-colors "
+              className={`block px-4 py-3 border-b border-gray-200 hover:bg-gray-50 text-sm font-normal transition-colors ${
+                isActive('/') ? 'text-red-600' : 'text-gray-600 hover:text-gray-900'
+              }`}
             >
               Home
             </Link>
             <Link
               href="/collections"
               onClick={() => setShowMobileMenu(false)}
-              className="block px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-normal transition-colors "
+              className={`block px-4 py-3 border-b border-gray-200 hover:bg-gray-50 text-sm font-normal transition-colors ${
+                isActive('/collections') ? 'text-red-600' : 'text-gray-600 hover:text-gray-900'
+              }`}
             >
               Collections
             </Link>
             <Link
               href="/best-sellers"
               onClick={() => setShowMobileMenu(false)}
-              className="block px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-normal transition-colors "
+              className={`block px-4 py-3 border-b border-gray-200 hover:bg-gray-50 text-sm font-normal transition-colors ${
+                isActive('/best-sellers') ? 'text-red-600' : 'text-gray-600 hover:text-gray-900'
+              }`}
             >
               Best Sellers
             </Link>
             <Link
               href="/contact"
               onClick={() => setShowMobileMenu(false)}
-              className="block px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-normal transition-colors "
+              className={`block px-4 py-3 border-b border-gray-200 hover:bg-gray-50 text-sm font-normal transition-colors ${
+                isActive('/contact') ? 'text-red-600' : 'text-gray-600 hover:text-gray-900'
+              }`}
             >
               Contact
             </Link>
             <Link
               href="/about"
               onClick={() => setShowMobileMenu(false)}
-              className="block px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-normal transition-colors "
+              className={`block px-4 py-3 hover:bg-gray-50 text-sm font-normal transition-colors ${
+                isActive('/about') ? 'text-red-600' : 'text-gray-600 hover:text-gray-900'
+              }`}
             >
               About
             </Link>

@@ -1,3 +1,14 @@
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'About Us',
+  description: 'Learn about Golden Barrel Whiskey - A leading online retailer offering premium alcohol delivery at your doorstep for the last 25 years.',
+  openGraph: {
+    title: 'About Golden Barrel Whiskey',
+    description: 'Learn about Golden Barrel Whiskey - A leading online retailer offering premium alcohol delivery at your doorstep.',
+  },
+};
+
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -11,7 +22,7 @@ export default function AboutPage() {
       </div>
 
       {/* Page Header */}
-      <div className="mb-12 text-center">
+      <div className="mb-12 text-center" data-aos="fade-up">
         <h1 className="text-4xl font-light text-gray-900 mb-4 tracking-tight">About Golden Barrel Whiskey</h1>
         <p className="text-base text-gray-600 font-light max-w-2xl mx-auto">
           Crafted to Perfection - Delivered with Care
@@ -20,7 +31,7 @@ export default function AboutPage() {
 
       {/* Content */}
       <div className="prose prose-gray max-w-none space-y-8">
-        <div>
+        <div data-aos="fade-up" data-aos-delay="100">
           <h2 className="text-2xl font-light text-gray-900 mb-4">Our Story</h2>
           <p className="text-gray-600 font-light leading-relaxed">
             Golden Barrel Whiskey is a leading online retailer offering the services of alcohol delivery at your doorstep. 
@@ -29,7 +40,7 @@ export default function AboutPage() {
           </p>
         </div>
 
-        <div>
+        <div data-aos="fade-up" data-aos-delay="200">
           <h2 className="text-2xl font-light text-gray-900 mb-4">Our Mission</h2>
           <p className="text-gray-600 font-light leading-relaxed">
             Our mission is to bring exceptional whiskeys, bourbons, scotch, and rare spirits from around the world 
@@ -38,7 +49,7 @@ export default function AboutPage() {
           </p>
         </div>
 
-        <div>
+        <div data-aos="fade-up" data-aos-delay="300">
           <h2 className="text-2xl font-light text-gray-900 mb-4">What We Offer</h2>
           <ul className="list-disc list-inside space-y-2 text-gray-600 font-light">
             <li>Premium selection of whiskeys, bourbons, and scotch</li>
@@ -49,7 +60,7 @@ export default function AboutPage() {
           </ul>
         </div>
 
-        <div>
+        <div data-aos="fade-up" data-aos-delay="400">
           <h2 className="text-2xl font-light text-gray-900 mb-4">Our Commitment</h2>
           <p className="text-gray-600 font-light leading-relaxed">
             We are committed to providing our customers with the finest selection of spirits, exceptional service, 
@@ -61,4 +72,3 @@ export default function AboutPage() {
     </div>
   );
 }
-

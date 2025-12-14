@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@types/nodemailer": "^7.0.4",
+    "aos": "^2.3.4",
     "axios": "^1.13.2",
     "cheerio": "^1.1.2",
+    "lucide-react": "^0.561.0",
     "next": "16.0.8",
     "nodemailer": "^7.0.11",
     "react": "19.2.1",
@@ -19,6 +21,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/aos": "^3.0.7",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

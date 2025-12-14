@@ -26,7 +26,7 @@ export default function CollectionsPage() {
       </div>
 
       {/* Page Header */}
-      <div className="mb-12">
+      <div className="mb-12" data-aos="fade-up">
         <h1 className="text-4xl font-light text-gray-900 mb-4 tracking-tight">Collections</h1>
         <p className="text-base text-gray-600 font-light max-w-3xl">
           Explore our curated collections of premium whiskeys, bourbons, scotch, and rare selections from around the world.
@@ -35,7 +35,7 @@ export default function CollectionsPage() {
 
       {/* Collections Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
-        {productTypes.map((type) => {
+        {productTypes.map((type, index) => {
           const typeProducts = allProducts.filter(p => (p.productType || 'Whiskey') === type);
           const count = typeProducts.length;
           const featuredProduct = typeProducts[0];
@@ -45,6 +45,8 @@ export default function CollectionsPage() {
               key={type}
               href={`/collections/whiskey?type=${encodeURIComponent(type)}`}
               className="group"
+              data-aos="fade-up"
+              data-aos-delay={index % 4 * 100}
             >
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
                 {featuredProduct?.imageUrl && (

@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Hero from '@/components/Hero';
 import ProductGrid from '@/components/ProductGrid';
+import InfiniteTextSlider from '@/components/InfiniteTextSlider';
 import whiskeyProducts from '@/data/whiskey-products-local.json';
 import { WhiskeyProduct } from '@/types/product';
 
@@ -39,7 +40,7 @@ function HomeContent() {
       
       {/* Search Results */}
       {searchQuery && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-aos="fade-up">
           <h2 className="text-xl font-light text-gray-900 mb-2 tracking-tight">
             Search Results for "{searchQuery}"
           </h2>
@@ -59,6 +60,17 @@ function HomeContent() {
           products={bestSellers} 
           title="BEST SELLERS"
         />
+      )}
+      
+      {/* Infinite Text Slider */}
+      {!searchQuery && (
+        <>
+          <InfiniteTextSlider 
+            text="CRAFTED TO PERFECTION - DELIVERED WITH CARE"
+            speed="fast"
+          />
+          <div className="border-b border-gray-200"></div>
+        </>
       )}
       
       {/* Rare Selection Section */}
@@ -89,7 +101,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <p className="text-center text-gray-600">Loading...</p>
         </div>
-      </div>
+    </div>
     }>
       <HomeContent />
     </Suspense>

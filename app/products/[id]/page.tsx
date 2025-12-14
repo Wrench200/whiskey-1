@@ -3,11 +3,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { WhiskeyProduct } from '@/types/product';
 import whiskeyProductsEnhanced from '@/data/whiskey-products-enhanced.json';
 import ProductCard from '@/components/ProductCard';
 import { useCart } from '@/contexts/CartContext';
+import { ChevronDown } from 'lucide-react';
 
 // Use enhanced data with all product details
 const whiskeyProducts = whiskeyProductsEnhanced as WhiskeyProduct[];
@@ -92,12 +93,61 @@ export default function ProductPage() {
     alert(`${product.name} added to cart!`);
   };
 
+  // Add structured data for SEO
+  useEffect(() => {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://goldenbarrelwhiskey.com';
+    const price = parseFloat(product.price.replace(/[^0-9.]/g, ''));
+    const imageUrl = product.imageUrl?.startsWith('http') 
+      ? product.imageUrl 
+      : `${baseUrl}${product.imageUrl || '/Logo.png'}`;
+
+    const structuredData = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.name,
+      description: product.description || `${product.name} - ${product.brand}`,
+      image: imageUrl,
+      brand: {
+        '@type': 'Brand',
+        name: product.brand,
+      },
+      offers: {
+        '@type': 'Offer',
+        url: `${baseUrl}/products/${product.id}`,
+        priceCurrency: 'USD',
+        price: price.toString(),
+        availability: product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      },
+    };
+
+    // Remove existing structured data script if any
+    const existingScript = document.querySelector('script[type="application/ld+json"][data-product-id]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Add new structured data script
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-product-id', product.id);
+    script.text = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+
+    // Cleanup
+    return () => {
+      const scriptToRemove = document.querySelector(`script[data-product-id="${product.id}"]`);
+      if (scriptToRemove) {
+        scriptToRemove.remove();
+      }
+    };
+  }, [product]);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Product Grid: Gallery and Info side by side on desktop */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
           {/* Product Gallery */}
-          <div className="product-gallery">
+          <div className="product-gallery" data-aos="fade-right">
             <div className="relative w-full aspect-square bg-gray-100 rounded-lg overflow-hidden">
               {product.imageUrl ? (
                 <Image
@@ -120,7 +170,7 @@ export default function ProductPage() {
           </div>
 
           {/* Product Info - Sticky on desktop */}
-          <div className="product-info lg:sticky lg:top-20 lg:self-start">
+          <div className="product-info lg:sticky lg:top-20 lg:self-start" data-aos="fade-left">
             <div className="space-y-6">
               {/* Vendor/Brand */}
               <div className="product-info__block-item">
@@ -311,7 +361,7 @@ export default function ProductPage() {
                   <button 
                     type="button"
                     onClick={handleAddToCart}
-                    className="w-full bg-[#bd9a65] hover:bg-[#a88955] text-white font-semibold py-4 px-6 rounded-lg text-lg transition-colors duration-200"
+                    className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 px-6 rounded-lg text-lg transition-colors duration-200"
                   >
                     Add to cart
                   </button>
@@ -337,16 +387,11 @@ export default function ProductPage() {
                 <h2 className="text-xl font-semibold text-gray-900">
                   Description
                 </h2>
-                <svg
+                <ChevronDown
                   className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
                     accordionOpen.description ? 'rotate-180' : ''
                   }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                />
               </button>
               {accordionOpen.description && (
                 <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
@@ -370,16 +415,11 @@ export default function ProductPage() {
                 <h2 className="text-xl font-semibold text-gray-900">
                   Highlights
                 </h2>
-                <svg
+                <ChevronDown
                   className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
                     accordionOpen.highlights ? 'rotate-180' : ''
                   }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                />
               </button>
               {accordionOpen.highlights && (
                 <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
@@ -403,16 +443,11 @@ export default function ProductPage() {
                 <h2 className="text-xl font-semibold text-gray-900">
                   Tasting Notes
                 </h2>
-                <svg
+                <ChevronDown
                   className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
                     accordionOpen.tastingNotes ? 'rotate-180' : ''
                   }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                />
               </button>
               {accordionOpen.tastingNotes && (
                 <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">

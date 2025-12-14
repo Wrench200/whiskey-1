@@ -14,16 +14,21 @@ export default function Hero() {
           sizes="100vw"
         />
         {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="absolute inset-0 bg-black/70"></div>
       </div>
       
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto text-center">
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-white mb-6 tracking-tight">
+        <p className="text-sm md:text-lg mb-4 text-gray-100 font-light" data-aos="fade-up" data-aos-delay="100">
+          Crafted to Perfection - Delivered with Care
+        </p>
+        <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-white mb-6 tracking-tight" data-aos="fade-up" data-aos-delay="200">
           Golden Barrel Whiskey
         </h1>
-        <p className="text-lg md:text-xl mb-12 text-gray-100 font-light">
-          Crafted to Perfection - Delivered with Care
+        <p className="text-base md:text-lg lg:text-xl mb-8 text-gray-200 font-light max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="300">
+          Discover exceptional whiskeys, bourbons, scotch, and rare selections from around the world. 
+          From rare bourbon and scotch to Japanese and Irish varieties, our curated collection features 
+          premium spirits for connoisseurs and casual drinkers alike.
         </p>
       </div>
     </section>

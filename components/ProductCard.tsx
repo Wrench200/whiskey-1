@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { WhiskeyProduct } from '@/types/product';
 import { useCart } from '@/contexts/CartContext';
+import { Plus, ShoppingCart } from 'lucide-react';
 
 interface ProductCardProps {
   product: WhiskeyProduct;
@@ -48,11 +49,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
         
-        {/* Add to Cart Button Overlay on Image */}
-        <div className="absolute inset-0 bg-black/30 bg-opacity-0 group-hover:bg-opacity-95 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100 z-10">
+        {/* Add to Cart Button Overlay on Image (Desktop only) */}
+        <div className="hidden md:flex absolute inset-0 bg-black/30 bg-opacity-0 group-hover:bg-opacity-95 transition-all duration-200 items-center justify-center opacity-0 group-hover:opacity-100 z-10">
           <button
             onClick={handleAddToCart}
-            className="bg-gray-900 hover:bg-gray-800 cursor-pointer text-white font-medium py-2.5 px-8 rounded-md transition-all duration-200 text-sm transform translate-y-2 group-hover:translate-y-0 "
+            className="bg-gray-900 hover:bg-gray-800 cursor-pointer text-white font-medium py-2.5 px-8 rounded-md transition-all duration-200 text-sm transform translate-y-2 group-hover:translate-y-0"
           >
             Add to cart
           </button>
@@ -73,16 +74,28 @@ export default function ProductCard({ product }: ProductCardProps) {
           </h3>
         </Link>
         
-        {/* Price */}
-        <div className="flex items-baseline gap-2">
-          {hasDiscount ? (
-            <>
+        {/* Price and Add to Cart (Mobile) */}
+        <div className="flex items-center justify-between gap-3 mt-auto">
+          <div className="flex items-baseline gap-2">
+            {hasDiscount ? (
+              <>
+                <span className="text-base font-medium text-gray-900">{product.price}</span>
+                <span className="text-sm text-gray-400 line-through">{product.regularPrice}</span>
+              </>
+            ) : (
               <span className="text-base font-medium text-gray-900">{product.price}</span>
-              <span className="text-sm text-gray-400 line-through">{product.regularPrice}</span>
-            </>
-          ) : (
-            <span className="text-base font-medium text-gray-900">{product.price}</span>
-          )}
+            )}
+          </div>
+          
+          {/* Add to Cart Button (Mobile only) */}
+          <button
+            onClick={handleAddToCart}
+            className="md:hidden bg-gray-900 hover:bg-gray-800 text-white p-2.5 rounded-md transition-colors flex items-center justify-center"
+            aria-label="Add to cart"
+          >
+            <Plus className="w-5 h-5" />
+            <ShoppingCart className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </div>

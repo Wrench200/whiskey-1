@@ -3,6 +3,7 @@
 import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 import Image from 'next/image';
+import { X } from 'lucide-react';
 
 export default function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
@@ -16,7 +17,7 @@ export default function CartPage() {
           <p className="text-xl text-gray-600 mb-8">Your cart is empty</p>
           <Link
             href="/"
-            className="inline-block bg-[#bd9a65] hover:bg-[#a88955] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
+            className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
           >
             Continue shopping
           </Link>
@@ -112,9 +113,7 @@ export default function CartPage() {
                     className="flex-shrink-0 text-gray-400 hover:text-red-600 transition-colors self-start"
                     aria-label="Remove item"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <X className="w-6 h-6" />
                   </button>
                 </div>
               );
@@ -152,7 +151,7 @@ export default function CartPage() {
 
             <Link
               href="/checkout"
-              className="block w-full bg-[#bd9a65] hover:bg-[#a88955] text-white font-semibold py-3 px-6 rounded-lg text-center transition-colors duration-200 mb-4"
+              className="block w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg text-center transition-colors duration-200 mb-4"
             >
               Place Order
             </Link>

@@ -23,7 +23,7 @@ export default function BestSellersPage() {
       </div>
 
       {/* Page Header */}
-      <div className="mb-12">
+      <div className="mb-12" data-aos="fade-up">
         <h1 className="text-4xl font-light text-gray-900 mb-4 tracking-tight">Best Sellers</h1>
         <p className="text-base text-gray-600 font-light max-w-3xl">
           Discover our most popular and highly-rated whiskeys, carefully selected by our customers and experts.

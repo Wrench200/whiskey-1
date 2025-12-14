@@ -339,8 +339,10 @@ function WhiskeyCollectionContent() {
             {paginatedProducts.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                  {paginatedProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                  {paginatedProducts.map((product, index) => (
+                    <div key={product.id} data-aos="fade-up" data-aos-delay={index % 4 * 100}>
+                      <ProductCard product={product} />
+                    </div>
                   ))}
                 </div>
 

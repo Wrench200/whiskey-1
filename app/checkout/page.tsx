@@ -72,7 +72,7 @@ export default function CheckoutPage() {
           <p className="text-xl text-gray-600 mb-8">Your cart is empty</p>
           <Link
             href="/"
-            className="inline-block bg-[#bd9a65] hover:bg-[#a88955] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
+            className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
           >
             Continue shopping
           </Link>
