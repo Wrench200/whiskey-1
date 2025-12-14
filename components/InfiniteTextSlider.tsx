@@ -8,7 +8,7 @@ interface InfiniteTextSliderProps {
 
 export default function InfiniteTextSlider({ 
   text, 
-  speed = 'normal',
+  speed = 'fast',
   className = '' 
 }: InfiniteTextSliderProps) {
   const speedClass = {
