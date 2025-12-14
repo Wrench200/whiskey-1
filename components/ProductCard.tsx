@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { WhiskeyProduct } from '@/types/product';
 import { useCart } from '@/contexts/CartContext';
-import { Plus, ShoppingCart } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 
 interface ProductCardProps {
   product: WhiskeyProduct;
@@ -21,9 +21,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
   
   return (
-    <div className="group relative flex flex-col bg-white">
+    <Link href={`/products/${product.id}`} className="group relative flex flex-col bg-white">
       <div className="relative w-full aspect-square bg-white overflow-hidden mb-6">
-        <Link href={`/products/${product.id}`} className="block w-full h-full">
+        <div className="block w-full h-full">
           {product.imageUrl ? (
             <Image
               src={product.imageUrl}
@@ -40,7 +40,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               </div>
             </div>
           )}
-        </Link>
+        </div>
         
         {/* Discount Badge on Image */}
         {hasDiscount && (
@@ -68,11 +68,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
         
         {/* Product Name */}
-        <Link href={`/products/${product.id}`}>
-          <h3 className="text-sm font-normal text-gray-900 mb-4 line-clamp-2 min-h-10 hover:text-gray-600 transition-colors leading-relaxed">
-            {product.name}
-          </h3>
-        </Link>
+        <h3 className="text-sm font-normal text-gray-900 mb-4 line-clamp-2 min-h-10 group-hover:text-gray-600 transition-colors leading-relaxed">
+          {product.name}
+        </h3>
         
         {/* Price and Add to Cart (Mobile) */}
         <div className="flex items-center justify-between gap-3 mt-auto">
@@ -90,15 +88,14 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* Add to Cart Button (Mobile only) */}
           <button
             onClick={handleAddToCart}
-            className="md:hidden bg-gray-900 hover:bg-gray-800 text-white p-2.5 rounded-md transition-colors flex items-center justify-center"
+            className="md:hidden bg-gray-900 hover:bg-gray-800 text-white p-2.5 rounded-md transition-colors flex items-center justify-center relative z-20"
             aria-label="Add to cart"
           >
-            <Plus className="w-5 h-5" />
             <ShoppingCart className="w-5 h-5" />
           </button>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
