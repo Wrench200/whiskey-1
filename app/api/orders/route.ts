@@ -7,7 +7,7 @@ function generateOrderId(): string {
 }
 
 // Email configuration - using environment variables
-const getEmailTransporter = () => {
+const getEmailTransporter = async () => {
   // For development, you can use a service like Ethereal Email or configure SMTP
   // For production, use a service like SendGrid, Mailgun, or AWS SES
   
@@ -24,7 +24,32 @@ const getEmailTransporter = () => {
     });
   }
 
-  // Option 2: For testing without SMTP, log emails to console
+  // Option 2: Ethereal Email for development/testing (creates test account automatically)
+  // This will actually send emails to a test inbox at https://ethereal.email
+  if (process.env.NODE_ENV !== 'production') {
+    try {
+      const testAccount = await nodemailer.createTestAccount();
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass,
+        },
+      });
+      console.log('📧 Using Ethereal Email for testing:');
+      console.log(`   Test account: ${testAccount.user}`);
+      console.log(`   View emails at: https://ethereal.email`);
+      return transporter;
+    } catch (error) {
+      console.error('⚠️  Failed to create Ethereal Email account:', error);
+      console.warn('⚠️  SMTP not configured. Emails will be logged to console only.');
+      return null;
+    }
+  }
+
+  // Option 3: For production without SMTP, log emails to console
   // In production, you should always configure SMTP
   console.warn('⚠️  SMTP not configured. Emails will be logged to console only.');
   return null;
@@ -437,8 +462,8 @@ export async function POST(request: NextRequest) {
     // Generate order ID
     const orderId = generateOrderId();
 
-    // Get email transporter
-    const transporter = getEmailTransporter();
+    // Get email transporter (async for Ethereal Email fallback)
+    const transporter = await getEmailTransporter();
 
     // Store email (configure this in environment variables)
     const storeEmail = process.env.STORE_EMAIL || 'orders@goldenbarrelwhiskey.com';
@@ -446,20 +471,34 @@ export async function POST(request: NextRequest) {
     // Send customer confirmation email
     if (transporter) {
       try {
-        await transporter.sendMail({
+        const customerMailOptions = {
           from: process.env.SMTP_FROM || 'Golden Barrel Whiskey <noreply@goldenbarrelwhiskey.com>',
           to: orderData.email,
           subject: `Order Confirmation - ${orderId}`,
           html: getCustomerEmailTemplate(orderData, orderId),
-        });
-        console.log(`✅ Customer confirmation email sent to ${orderData.email}`);
+        };
+        
+        const customerInfo = await transporter.sendMail(customerMailOptions);
+        
+        // If using Ethereal Email, log the preview URL
+        if (process.env.NODE_ENV !== 'production' && customerInfo.messageId) {
+          const previewUrl = nodemailer.getTestMessageUrl(customerInfo);
+          if (previewUrl) {
+            console.log(`✅ Customer confirmation email sent to ${orderData.email}`);
+            console.log(`   Preview URL: ${previewUrl}`);
+          } else {
+            console.log(`✅ Customer confirmation email sent to ${orderData.email}`);
+          }
+        } else {
+          console.log(`✅ Customer confirmation email sent to ${orderData.email}`);
+        }
       } catch (emailError) {
-        console.error('Error sending customer email:', emailError);
+        console.error('❌ Error sending customer email:', emailError);
         // Continue even if email fails - don't fail the order
       }
     } else {
       // Log email content to console if SMTP is not configured
-      console.log('📧 Customer Email (SMTP not configured):');
+      console.warn('⚠️  Customer Email (SMTP not configured):');
       console.log('To:', orderData.email);
       console.log('Subject:', `Order Confirmation - ${orderId}`);
       console.log('HTML:', getCustomerEmailTemplate(orderData, orderId));
@@ -468,20 +507,34 @@ export async function POST(request: NextRequest) {
     // Send store notification email
     if (transporter) {
       try {
-        await transporter.sendMail({
+        const storeMailOptions = {
           from: process.env.SMTP_FROM || 'Golden Barrel Whiskey <noreply@goldenbarrelwhiskey.com>',
           to: storeEmail,
           subject: `New Order Received - ${orderId}`,
           html: getStoreEmailTemplate(orderData, orderId),
-        });
-        console.log(`✅ Store notification email sent to ${storeEmail}`);
+        };
+        
+        const storeInfo = await transporter.sendMail(storeMailOptions);
+        
+        // If using Ethereal Email, log the preview URL
+        if (process.env.NODE_ENV !== 'production' && storeInfo.messageId) {
+          const previewUrl = nodemailer.getTestMessageUrl(storeInfo);
+          if (previewUrl) {
+            console.log(`✅ Store notification email sent to ${storeEmail}`);
+            console.log(`   Preview URL: ${previewUrl}`);
+          } else {
+            console.log(`✅ Store notification email sent to ${storeEmail}`);
+          }
+        } else {
+          console.log(`✅ Store notification email sent to ${storeEmail}`);
+        }
       } catch (emailError) {
-        console.error('Error sending store email:', emailError);
+        console.error('❌ Error sending store email:', emailError);
         // Continue even if email fails - don't fail the order
       }
     } else {
       // Log email content to console if SMTP is not configured
-      console.log('📧 Store Email (SMTP not configured):');
+      console.warn('⚠️  Store Email (SMTP not configured):');
       console.log('To:', storeEmail);
       console.log('Subject:', `New Order Received - ${orderId}`);
       console.log('HTML:', getStoreEmailTemplate(orderData, orderId));
