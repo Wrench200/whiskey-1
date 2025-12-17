@@ -48,6 +48,7 @@ function WhiskeyCollectionContent() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const productsPerPage = 24;
 
   const allProducts = whiskeyProductsData as WhiskeyProduct[];
@@ -319,8 +320,19 @@ function WhiskeyCollectionContent() {
           <div className="flex-1">
             {/* Mobile Filters Toggle */}
             <div className="lg:hidden mb-6 flex items-center justify-between">
-              <button className="text-sm text-gray-600 hover:text-gray-900">
+              <button 
+                onClick={() => setShowMobileFilters(!showMobileFilters)}
+                className="text-sm font-medium text-gray-900 hover:text-gray-700 flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
                 Filter
+                {(selectedTypes.length > 0 || selectedBrands.length > 0 || priceRange[0] > 0 || priceRange[1] < 1000 || inStockOnly) && (
+                  <span className="bg-gray-900 text-white text-xs px-2 py-0.5 rounded-full">
+                    {selectedTypes.length + selectedBrands.length + (priceRange[0] > 0 || priceRange[1] < 1000 ? 1 : 0) + (inStockOnly ? 1 : 0)}
+                  </span>
+                )}
               </button>
               <select
                 value={sortBy}
@@ -334,6 +346,147 @@ function WhiskeyCollectionContent() {
                 <option value="name-desc">Alphabetically, Z-A</option>
               </select>
             </div>
+
+            {/* Mobile Filters Panel */}
+            {showMobileFilters && (
+              <>
+                {/* Overlay */}
+                <div 
+                  className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+                  onClick={() => setShowMobileFilters(false)}
+                />
+                
+                {/* Filters Drawer */}
+                <div className="fixed inset-y-0 left-0 w-80 bg-white z-50 overflow-y-auto lg:hidden">
+                  <div className="p-6">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-lg font-medium text-gray-900">Filter</h2>
+                      <button
+                        onClick={() => setShowMobileFilters(false)}
+                        className="text-gray-400 hover:text-gray-600"
+                        aria-label="Close filters"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* Clear Filters */}
+                    {(selectedTypes.length > 0 || selectedBrands.length > 0 || priceRange[0] > 0 || priceRange[1] < 1000 || inStockOnly) && (
+                      <button
+                        onClick={() => {
+                          clearFilters();
+                        }}
+                        className="mb-6 text-sm text-gray-600 hover:text-gray-900 underline"
+                      >
+                        Clear all filters
+                      </button>
+                    )}
+
+                    {/* Product Count */}
+                    <div className="text-sm text-gray-600 font-light mb-6">
+                      {filteredAndSortedProducts.length} {filteredAndSortedProducts.length === 1 ? 'product' : 'products'}
+                    </div>
+
+                    {/* Product Type Filter */}
+                    <div className="mb-8">
+                      <h3 className="text-xs font-medium text-gray-900 mb-3 uppercase tracking-wider">Product type</h3>
+                      <div className="space-y-2 max-h-64 overflow-y-auto">
+                        {PRODUCT_TYPES.map(type => {
+                          const count = productTypeCounts[type] || 0;
+                          if (count === 0) return null;
+                          return (
+                            <label key={type} className="flex items-center cursor-pointer group">
+                              <input
+                                type="checkbox"
+                                checked={selectedTypes.includes(type)}
+                                onChange={() => toggleProductType(type)}
+                                className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900"
+                              />
+                              <span className="ml-2 text-sm text-gray-600 group-hover:text-gray-900 font-light">
+                                {type} ({count})
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Brand Filter */}
+                    <div className="mb-8">
+                      <h3 className="text-xs font-medium text-gray-900 mb-3 uppercase tracking-wider">Brand</h3>
+                      <div className="space-y-2 max-h-64 overflow-y-auto">
+                        {brands.slice(0, 50).map(brand => {
+                          const count = brandCounts[brand] || 0;
+                          if (count === 0) return null;
+                          return (
+                            <label key={brand} className="flex items-center cursor-pointer group">
+                              <input
+                                type="checkbox"
+                                checked={selectedBrands.includes(brand)}
+                                onChange={() => toggleBrand(brand)}
+                                className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900"
+                              />
+                              <span className="ml-2 text-sm text-gray-600 group-hover:text-gray-900 font-light truncate">
+                                {brand} ({count})
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Price Range */}
+                    <div className="mb-8">
+                      <h3 className="text-xs font-medium text-gray-900 mb-3 uppercase tracking-wider">Price</h3>
+                      <div className="space-y-3">
+                        <div className="flex gap-2">
+                          <input
+                            type="number"
+                            value={priceRange[0]}
+                            onChange={(e) => setPriceRange([parseFloat(e.target.value) || 0, priceRange[1]])}
+                            placeholder="Min"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-gray-900"
+                          />
+                          <input
+                            type="number"
+                            value={priceRange[1]}
+                            onChange={(e) => setPriceRange([priceRange[0], parseFloat(e.target.value) || 1000])}
+                            placeholder="Max"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-gray-900"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Availability */}
+                    <div className="mb-8">
+                      <label className="flex items-center cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={inStockOnly}
+                          onChange={(e) => setInStockOnly(e.target.checked)}
+                          className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900"
+                        />
+                        <span className="ml-2 text-sm text-gray-600 group-hover:text-gray-900 font-light">
+                          In stock only
+                        </span>
+                      </label>
+                    </div>
+
+                    {/* Apply Button */}
+                    <button
+                      onClick={() => setShowMobileFilters(false)}
+                      className="w-full bg-gray-900 text-white font-medium py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors"
+                    >
+                      Apply Filters
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Products */}
             {paginatedProducts.length > 0 ? (

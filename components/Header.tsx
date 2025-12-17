@@ -7,6 +7,7 @@ import { useCart } from '@/contexts/CartContext';
 import Image from 'next/image';
 import SearchBar from './SearchBar';
 import { Menu, X, Search, ShoppingCart, Minus, Plus } from 'lucide-react';
+import { isDecember } from '@/lib/utils';
 
 export default function Header() {
   const pathname = usePathname();
@@ -16,6 +17,7 @@ export default function Header() {
   const { cartItems, getTotalItems, removeFromCart, updateQuantity } = useCart();
 
   const totalItems = getTotalItems();
+  const freeDeliveryInDecember = isDecember();
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -25,7 +27,16 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <>
+      {/* Free Delivery Banner */}
+      {freeDeliveryInDecember && (
+        <div className="bg-gradient-to-r from-green-600 to-green-700 text-white text-center py-2 px-4 relative z-50">
+          <p className="text-sm sm:text-base font-medium">
+            FREE DELIVERY THIS DECEMBER! No shipping charges on all orders.
+          </p>
+        </div>
+      )}
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 sm:h-24 overflow-visible">
           {/* Mobile menu button */}
@@ -311,6 +322,7 @@ export default function Header() {
         </div>
       </div>
     </header>
+    </>
   );
 }
 

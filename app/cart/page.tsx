@@ -4,10 +4,12 @@ import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 import Image from 'next/image';
 import { X } from 'lucide-react';
+import { isDecember } from '@/lib/utils';
 
 export default function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
   const total = getTotalPrice();
+  const freeDeliveryInDecember = isDecember();
 
   if (cartItems.length === 0) {
     return (
@@ -141,8 +143,19 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between text-gray-700">
                 <span>Shipping</span>
-                <span className="font-semibold">Calculated at checkout</span>
+                {freeDeliveryInDecember ? (
+                  <span className="font-semibold text-green-600">FREE</span>
+                ) : (
+                  <span className="font-semibold">Calculated at checkout</span>
+                )}
               </div>
+              {freeDeliveryInDecember && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-2">
+                  <p className="text-sm text-green-800 font-medium">
+                    Free delivery this December!
+                  </p>
+                </div>
+              )}
               <div className="border-t border-gray-300 pt-4 flex justify-between text-lg font-bold text-gray-900">
                 <span>Total</span>
                 <span>${total.toFixed(2)}</span>

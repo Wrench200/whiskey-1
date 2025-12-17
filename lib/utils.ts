@@ -26,3 +26,11 @@ export function sanitizeImageUrl(url: string | null | undefined): string | null 
   return sanitized;
 }
 
+/**
+ * Checks if the current month is December
+ */
+export function isDecember(): boolean {
+  const now = new Date();
+  return now.getMonth() === 11; // December is month 11 (0-indexed)
+}
+

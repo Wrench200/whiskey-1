@@ -459,6 +459,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate minimum order amount ($250)
+    const orderTotal = parseFloat(orderData.total) || 0;
+    const MINIMUM_ORDER_AMOUNT = 250;
+    if (orderTotal < MINIMUM_ORDER_AMOUNT) {
+      return NextResponse.json(
+        { 
+          error: 'Minimum order amount not met',
+          message: `The minimum order amount is $${MINIMUM_ORDER_AMOUNT}.00. Your current order total is $${orderTotal.toFixed(2)}.`,
+          minimumAmount: MINIMUM_ORDER_AMOUNT,
+          currentTotal: orderTotal
+        },
+        { status: 400 }
+      );
+    }
+
     // Generate order ID
     const orderId = generateOrderId();
 

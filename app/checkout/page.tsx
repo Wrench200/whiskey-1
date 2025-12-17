@@ -5,12 +5,16 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 import Image from 'next/image';
+import { isDecember } from '@/lib/utils';
+
+const MINIMUM_ORDER_AMOUNT = 250;
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { cartItems, getTotalPrice, clearCart } = useCart();
   const total = getTotalPrice();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const freeDeliveryInDecember = isDecember();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -33,6 +37,13 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate minimum order amount before submitting
+    if (total < MINIMUM_ORDER_AMOUNT) {
+      alert(`Minimum order amount is $${MINIMUM_ORDER_AMOUNT}.00. Your current order total is $${total.toFixed(2)}. Please add more items to your cart.`);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -264,10 +275,10 @@ export default function CheckoutPage() {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || total < MINIMUM_ORDER_AMOUNT}
               className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-lg text-center transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Placing Order...' : 'Place Order'}
+              {isSubmitting ? 'Placing Order...' : total < MINIMUM_ORDER_AMOUNT ? `Add $${(MINIMUM_ORDER_AMOUNT - total).toFixed(2)} More` : 'Place Order'}
             </button>
           </form>
         </div>
@@ -319,13 +330,36 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between text-gray-700">
                 <span>Shipping</span>
-                <span className="font-semibold">Calculated at delivery</span>
+                {freeDeliveryInDecember ? (
+                  <span className="font-semibold text-green-600">FREE</span>
+                ) : (
+                  <span className="font-semibold">Calculated at delivery</span>
+                )}
               </div>
+              {freeDeliveryInDecember && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-2">
+                  <p className="text-sm text-green-800 font-medium">
+                    Free delivery this December!
+                  </p>
+                </div>
+              )}
               <div className="border-t border-gray-300 pt-3 flex justify-between text-lg font-bold text-gray-900">
                 <span>Total</span>
                 <span>${total.toFixed(2)}</span>
               </div>
             </div>
+
+            {/* Minimum Order Notice */}
+            {total < MINIMUM_ORDER_AMOUNT && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <p className="text-sm text-yellow-800">
+                  <strong>Minimum Order Required:</strong> ${MINIMUM_ORDER_AMOUNT}.00
+                </p>
+                <p className="text-sm text-yellow-700 mt-1">
+                  You need ${(MINIMUM_ORDER_AMOUNT - total).toFixed(2)} more to place your order.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
