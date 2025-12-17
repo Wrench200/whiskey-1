@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AOSProvider from "@/components/AOSProvider";
 import StructuredData from "@/components/StructuredData";
+import Script from 'next/script';
 
 const jost = Jost({
   variable: "--font-jost",
@@ -88,6 +89,7 @@ export default function RootLayout({
           </CartProvider>
         </AOSProvider>
       </body>
+        <Script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=fAYRFypvpx7t"></Script>
     </html>
   );
 }
