@@ -88,8 +88,8 @@ export default function RootLayout({
             <Footer />
           </CartProvider>
         </AOSProvider>
+        <Script id="chatway" async={true} src="https://cdn.chatway.app/widget.js?id=fAYRFypvpx7t"></Script>
       </body>
-        <Script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=fAYRFypvpx7t"></Script>
     </html>
   );
 }
